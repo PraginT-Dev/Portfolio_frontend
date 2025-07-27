@@ -4,6 +4,7 @@ import glsl from 'vite-plugin-glsl';
 import path from 'path';
 
 export default defineConfig({
+  base: './', // ⬅️ this fixes blank screen issues on deployment
   plugins: [
     react(),
     glsl({
@@ -13,11 +14,11 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'), // better alias
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   build: {
-    outDir: 'dist', // Vercel expects this
+    outDir: 'dist',
   },
   server: {
     host: '0.0.0.0',
