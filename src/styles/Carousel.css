@@ -187,9 +187,4 @@
     border-radius: 10px;
   }
 }
-@media screen and (orientation: landscape) and (max-width: 950px) {
-  .your-main-container {
-    overflow-y: auto;
-    height: 100vh;
-  }
-}
+

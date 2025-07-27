@@ -1,4 +1,3 @@
-// src/components_front/ConnectUs.tsx
 import React, { useState } from 'react';
 import '../styles/Connect.css';
 
@@ -9,39 +8,102 @@ interface Props {
 
 const ConnectUs: React.FC<Props> = ({ onBack, onReturnHome }) => {
   const [submitted, setSubmitted] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      onReturnHome();
-    }, 2000);
+    setLoading(true);
+
+    try {
+      const response = await fetch('https://portfolio-backend-igmy.onrender.com/api/feedback/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('Server response error:', data);
+        alert(data?.error || 'Something went wrong while sending your message.');
+        return;
+      }
+
+      console.log('Feedback response:', data);
+      setSubmitted(true);
+
+      setTimeout(() => {
+        setSubmitted(false);
+        setName('');
+        setEmail('');
+        setMessage('');
+        onReturnHome();
+      }, 2000);
+
+    } catch (error: any) {
+      console.error('Error submitting feedback:', error);
+      alert('Failed to send your message. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="connect-wrapper">
-      {/* Header remains visible always */}
       <div className="connect-header">
-        <h1>Connect with me! </h1>
-        <button className="back-button" onClick={onBack}>← Back</button>
+        <h1>Connect with me!</h1>
+        <button className="back-button" onClick={onBack} aria-label="Go back">← Back</button>
       </div>
 
-      {/* Form OR Thank-you Message */}
       {!submitted ? (
         <form className="connect-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Your Name</label>
-            <input id="name" type="text" placeholder="John Doe" required />
+            <input
+              id="name"
+              type="text"
+              placeholder="John Doe"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              disabled={loading}
+              aria-required="true"
+            />
           </div>
           <div className="form-group">
             <label htmlFor="email">Your Email</label>
-            <input id="email" type="email" placeholder="john@example.com" required />
+            <input
+              id="email"
+              type="email"
+              placeholder="john@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              aria-required="true"
+            />
           </div>
           <div className="form-group">
             <label htmlFor="message">Your Message</label>
-            <textarea id="message" placeholder="Write your message..." required />
+            <textarea
+              id="message"
+              placeholder="Write your message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+              disabled={loading}
+              aria-required="true"
+              rows={5}
+            />
           </div>
-          <button type="submit" className="submit-button">Submit</button>
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? 'Sending...' : 'Submit'}
+          </button>
         </form>
       ) : (
         <div className="thank-you-message">
