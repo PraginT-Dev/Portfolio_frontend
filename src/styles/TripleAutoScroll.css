@@ -1,0 +1,98 @@
+/* === TripleAutoScroll.css === */
+
+.scroll-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  padding-top: 8rem;
+  padding-bottom: 3.5rem;
+  margin-top: 5rem;
+}
+
+.auto-scroll-text-wrapper {
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.auto-scroll-motion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.auto-scroll-span {
+  flex-shrink: 0;
+  padding-right: 1.25rem;
+  font-weight: 900;
+  color: transparent;
+  background-image: linear-gradient(to right, red, white);
+  background-clip: text;
+  -webkit-background-clip: text;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.8rem; /* Default for desktop */
+  letter-spacing: 0.75px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* === Push further down on tablets === */
+@media (max-width: 1023px) {
+  .scroll-container {
+    margin-top: 10rem;
+    padding-top: 6rem;
+  }
+
+  .auto-scroll-span {
+    font-size: 2rem;
+    letter-spacing: 0.4px;
+    padding-right: 1rem;
+  }
+}
+
+/* === Push down and reduce size on small mobiles === */
+@media (max-width: 639px) {
+  .scroll-container {
+    margin-top: 10rem;
+    padding-top: 7rem;
+  }
+
+  .auto-scroll-span {
+    font-size: 2.5rem;
+    letter-spacing: 0.3px;
+    padding-right: 0.8rem;
+  }
+}
+
+/* === Even smaller devices (under 400px) === */
+@media (max-width: 400px) {
+  .scroll-container {
+    margin-top: 11rem;
+    padding-top: 7rem;
+  }
+
+  .auto-scroll-span {
+    font-size: 2.2rem;
+    letter-spacing: 0.2px;
+    padding-right: 0.6rem;
+  }
+}
+/* === Landscape mobile fix (e.g., 934x307) === */
+@media screen and (max-height: 400px) and (orientation: landscape) {
+  .scroll-container {
+    padding-top: 2rem;
+    padding-bottom: 1.5rem;
+    margin-top: 6rem;
+  }
+
+  .auto-scroll-span {
+    font-size: 1.5rem;
+    letter-spacing: 0.2px;
+    padding-right: 0.5rem;
+  }
+}

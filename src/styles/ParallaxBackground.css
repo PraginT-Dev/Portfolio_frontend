@@ -1,0 +1,58 @@
+.parallax-bg {
+  position: fixed;
+  top: -10vh;
+  left: -10vw;
+  width: 120vw;
+  height: 120vh;
+  background-image: url('bg.jpg');
+  background-size: cover;
+  background-position: center center;
+  z-index: -1;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.permission-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: manipulation;
+}
+
+.popup-content {
+  background: #111;
+  color: white;
+  border: 2px solid red;
+  padding: 25px 35px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 30px red;
+}
+
+.popup-content p {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.popup-content .btn {
+  margin: 10px;
+  padding: 12px 25px;
+  font-size: 16px;
+  background: red;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.popup-content .btn:active {
+  transform: scale(0.95);
+}

@@ -1,0 +1,229 @@
+.name-stack {
+  position: absolute;
+  top: 1rem;
+  right: 7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 50;
+  pointer-events: none;
+  user-select: none;
+  gap: 0;
+  white-space: nowrap;
+}
+
+/* "Hi" top-left of name */
+.hi-top {
+  align-self: flex-start;
+  transform: translate(-1.6rem, 0.6rem);
+  font-size: 1.5rem; /* Increased */
+  font-weight: 700;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Main 3D Name */
+.name-3d {
+  font-size: 5rem;
+  font-weight: 900;
+  font-family: 'Orbitron', sans-serif;
+  color: white;
+  text-shadow:
+    -1px 0 red,
+    -2px 0 red,
+    -3px 0 red,
+    -4px 0 red;
+  position: relative;
+}
+
+/* Role line — bottom-right of name */
+.role-below {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  transform: translateY(-0.3rem);
+  pointer-events: auto; /* Make links clickable */
+}
+
+.role-below span {
+  font-size: 1.6rem; /* Increased */
+  font-weight: 800;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Icon links */
+.role-below a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+  pointer-events: auto; /* Ensure icons are clickable */
+}
+
+.role-below a:hover {
+  transform: scale(1.2);
+}
+
+.role-below img {
+  width: 26px;
+  height: 26px;
+  filter: invert(1);
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .name-stack {
+    top: 7rem; /* Increased from 5rem to 7rem */
+    right: 6rem;
+  }
+
+  .name-3d {
+    font-size: 4rem;
+  }
+
+  .role-below span {
+    font-size: 1.4rem;
+  }
+
+  .role-below img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .hi-top {
+    transform: translate(-1.2rem, 0.5rem);
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .name-stack {
+    top: 8rem; /* Increased from 5rem to 8rem */
+    right: 5rem;
+  }
+
+  .name-3d {
+    font-size: 3rem;
+  }
+
+  .role-below span {
+    font-size: 1.2rem;
+  }
+
+  .role-below img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hi-top {
+    transform: translate(-1rem, 0.4rem);
+    font-size: 1.2rem;
+  }
+}
+@media (max-width: 420px) {
+  .name-stack {
+    top: 8rem; /* Increased from 5rem to 8rem */
+    right: 3rem;
+  }
+
+  .name-3d {
+    font-size: 3rem;
+  }
+
+  .role-below span {
+    font-size: 1.2rem;
+  }
+
+  .role-below img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hi-top {
+    transform: translate(-1rem, 0.4rem);
+    font-size: 1.2rem;
+  }
+}
+@media (max-width: 350px) {
+  .name-stack {
+    top: 8rem; /* Increased from 5rem to 8rem */
+    right: 1rem;
+  }
+
+  .name-3d {
+    font-size: 3rem;
+  }
+
+  .role-below span {
+    font-size: 1.2rem;
+  }
+
+  .role-below img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hi-top {
+    transform: translate(-1rem, 0.4rem);
+    font-size: 1.2rem;
+  }
+}
+/* Landscape mobile fix (like 934x307) */
+@media screen and (max-height: 400px) and (orientation: landscape) {
+  .name-stack {
+    top: 2rem;
+    right: 2rem;
+    transform: scale(1); /* Slight scale down for entire block */
+    transform-origin: top right;
+    white-space: nowrap;
+  }
+
+  .hi-top {
+    transform: translate(-1rem, 0.4rem);
+    font-size: 1rem;
+  }
+
+  .name-3d {
+    font-size: 2.4rem;
+  }
+
+  .role-below span {
+    font-size: 1rem;
+  }
+
+  .role-below img {
+    width: 18px;
+    height: 18px;
+  }
+}
+@media screen and (max-height: 300px) and (orientation: landscape) {
+  .name-stack {
+    top: 2rem;
+    right: 2rem;
+    transform: scale(0.5); /* Slight scale down for entire block */
+    transform-origin: top right;
+    white-space: nowrap;
+  }
+
+  .hi-top {
+    transform: translate(-1rem, 0.4rem);
+    font-size: 1rem;
+  }
+
+  .name-3d {
+    font-size: 2.4rem;
+  }
+
+  .role-below span {
+    font-size: 1rem;
+  }
+
+  .role-below img {
+    width: 18px;
+    height: 18px;
+  }
+}

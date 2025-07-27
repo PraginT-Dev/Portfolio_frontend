@@ -1,0 +1,13 @@
+html, body, #root {
+  height: 100dvh; /* Enforce dynamic height */
+  overflow: hidden !important; /* Lock scroll completely */
+  margin: 0;
+  padding: 0;
+    overflow-x: auto; /* allows horizontal scroll if needed */
+  overflow-y: auto; /* vertical scroll */
+  overscroll-behavior: none;
+}
+
+canvas {
+  display: block;
+}
