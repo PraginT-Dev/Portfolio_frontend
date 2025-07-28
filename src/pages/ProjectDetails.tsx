@@ -22,6 +22,7 @@ interface Project {
 interface ExtendedCarouselItem extends CarouselItem {
   github_link?: string;
   live_preview_link?: string;
+  images: string[];
 }
 
 interface ProjectGalleryProps {
@@ -92,9 +93,7 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
   const currentProject = carouselItems[currentIndex] || {};
 
   return (
-    
     <div className="p-4 flex flex-col items-center text-white">
-      {/* Header */}
       <div className="w-full flex items-center justify-between mb-4 max-w-[1400px] gap-4">
         <h2 className="text-2xl font-bold">Projects</h2>
         <button
@@ -105,7 +104,6 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
         </button>
       </div>
 
-      {/* Title */}
       <AnimatePresence mode="wait">
         <motion.h3
           key={currentProject.title}
@@ -119,7 +117,6 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
         </motion.h3>
       </AnimatePresence>
 
-      {/* Buttons below title */}
       <AnimatePresence mode="wait">
         <motion.div
           key={`${currentProject.github_link}-${currentProject.live_preview_link}`}
@@ -152,7 +149,6 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Carousel */}
       {carouselItems.length > 0 ? (
         <div className="flex flex-col items-center w-full" style={{ maxWidth: "1400px" }}>
           <Carousel
@@ -163,8 +159,6 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
             onIndexChange={(i) => setCurrentIndex(i)}
             onImageClick={() => handleImageClick(0)}
           />
-
-          {/* Slide index */}
           <p className="text-sm text-gray-300 mt-1">
             {currentIndex + 1} of {carouselItems.length}
           </p>
@@ -173,7 +167,6 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
         <p>Loading projects…</p>
       )}
 
-      {/* Description */}
       <AnimatePresence mode="wait">
         <motion.p
           key={currentProject.description}
@@ -187,7 +180,6 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
         </motion.p>
       </AnimatePresence>
 
-      {/* Fullscreen Preview */}
       {showPreview && (
         <div
           className="fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col items-center justify-center"
@@ -220,7 +212,7 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
             </button>
 
             <img
-              src={carouselItems[currentIndex].images[previewIndex]}
+              src={carouselItems[currentIndex]?.images[previewIndex]}
               alt={`Preview ${previewIndex}`}
               className="max-w-[90vw] max-h-[80vh] object-contain rounded"
             />
