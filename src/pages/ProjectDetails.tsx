@@ -37,7 +37,7 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
 
   useEffect(() => {
     axios
-      .get("https://portfolio-backend-igmy.onrender.com/api/projects/")
+      .get("https://portfolio-backend-2s7t.onrender.com/api/projects/")
       .then((res) => {
         const fetched: Project[] = res.data;
         const formattedItems: ExtendedCarouselItem[] = fetched.map((project) => ({

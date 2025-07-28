@@ -1,13 +1,13 @@
-// src/components_front/ImageSequence.tsx
+// src/components_front/ImageSequenceHoverAchievements.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import '../styles/ProjectSequence.css';
 
 interface Props {
   isVisible?: boolean;
   onClick?: () => void;
-  enableTilt?: boolean; // device tilt interaction
-  autoPlayMobile?: boolean; // autoplay and reverse every few seconds
-  hoverSensitive?: boolean; // hover triggers animation
+  enableTilt?: boolean;
+  autoPlayMobile?: boolean;
+  hoverSensitive?: boolean;
   centerRadius?: number;
   framePath?: string;
   frameCount?: number;
@@ -30,16 +30,22 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
   const requestRef = useRef<number>(0);
   const directionRef = useRef<1 | -1>(1);
   const currentFrame = useRef(0);
+
   const [hovered, setHovered] = useState(false);
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-  const preloadImages = () => {
+  const preloadImages = async () => {
+    const promises: Promise<void>[] = [];
     for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
       img.src = `${framePath}${String(i).padStart(4, '0')}.png`;
+      promises.push(new Promise((res) => (img.onload = () => res())));
     }
+    await Promise.all(promises);
+    setImagesLoaded(true);
   };
 
   const updateFrame = () => {
@@ -72,7 +78,7 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
       ([entry]) => {
         if (entry.isIntersecting) {
           setInView(true);
-          preloadImages();
+          preloadImages(); // Load once we enter view
         } else {
           setInView(false);
         }
@@ -84,16 +90,16 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
+    if (!inView || !isVisible || !imagesLoaded || !isMobile || !autoPlayMobile) return;
     const interval = setInterval(() => {
       directionRef.current *= -1;
       setIsPlaying(true);
     }, 3000);
     return () => clearInterval(interval);
-  }, [inView, isVisible, isMobile, autoPlayMobile]);
+  }, [inView, isVisible, isMobile, autoPlayMobile, imagesLoaded]);
 
   useEffect(() => {
-    if (!inView || !isVisible || !isMobile || !enableTilt) return;
+    if (!inView || !isVisible || !imagesLoaded || !isMobile || !enableTilt) return;
     const handleOrientation = (event: DeviceOrientationEvent) => {
       const tiltY = event.beta || 0;
       directionRef.current = tiltY < 65 ? 1 : -1;
@@ -101,20 +107,20 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
     };
     window.addEventListener('deviceorientation', handleOrientation);
     return () => window.removeEventListener('deviceorientation', handleOrientation);
-  }, [enableTilt, inView, isMobile, isVisible]);
+  }, [enableTilt, inView, isMobile, isVisible, imagesLoaded]);
 
   useEffect(() => {
-    if (!inView || !isVisible || isMobile || !hoverSensitive) return;
+    if (!inView || !isVisible || !imagesLoaded || isMobile || !hoverSensitive) return;
     directionRef.current = hovered ? 1 : -1;
     setIsPlaying(true);
-  }, [hovered, inView, isVisible, isMobile, hoverSensitive]);
+  }, [hovered, inView, isVisible, isMobile, hoverSensitive, imagesLoaded]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!imagesLoaded || !isPlaying) return;
     cancelAnimationFrame(requestRef.current);
     requestRef.current = requestAnimationFrame(updateFrame);
     return () => cancelAnimationFrame(requestRef.current);
-  }, [isPlaying]);
+  }, [isPlaying, imagesLoaded]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!hoverSensitive || isMobile) return;
@@ -137,12 +143,16 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
         className={`fade-wrapper ${isVisible ? 'fade-in' : 'fade-out'}`}
         style={{ width: '100%', height: '100%' }}
       >
-        <img
-          ref={imgRef}
-          src={`${framePath}0001.png`}
-          alt="Animation"
-          className="image-sequence-img"
-        />
+        {!imagesLoaded ? (
+          <div className="loading-frame">Loading...</div> // optional loading UI
+        ) : (
+          <img
+            ref={imgRef}
+            src={`${framePath}0001.png`}
+            alt="Animation"
+            className="image-sequence-img"
+          />
+        )}
       </div>
     </div>
   );

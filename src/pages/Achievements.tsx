@@ -33,7 +33,7 @@ export default function Achievements({ onBack }: AchievementsProps) {
 
   useEffect(() => {
     axios
-      .get("https://portfolio-backend-ud9l.onrender.com/api/certificates/")
+      .get("https://portfolio-backend-2s7t.onrender.com/api/certificates/")
       .then((res) => {
         const fetched: Certificate[] = res.data;
         const formatted: CarouselItemExtended[] = fetched.map((cert) => ({
