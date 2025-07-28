@@ -44,11 +44,11 @@ const Homepage: React.FC<HomepageProps> = ({
   return (
     <div className="homepage-container">
       <div className="name-stack">
-        <div className="hi-top">Hi 👋 </div>
+        <div className="hi-top">Hi 👋 i'm</div>
         <div className="name-3d">T.Pragin</div>
         <div className="role-below">
           <a
-            href="https://github.com/your-github"
+            href="https://github.com/Pragin-T"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -58,7 +58,7 @@ const Homepage: React.FC<HomepageProps> = ({
           <span>3D stack Dev</span>
 
           <a
-            href="https://www.linkedin.com/in/your-profile"
+            href="https://www.linkedin.com/in/pragin-t/"
             target="_blank"
             rel="noopener noreferrer"
           >

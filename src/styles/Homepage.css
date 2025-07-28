@@ -25,6 +25,13 @@
   pointer-events: none;
 }
 
+.role-below img {
+  width: 28px;
+  height: 28px;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+}
 
 /* Tablets (1024px and down) */
 @media (max-width: 1024px) {
