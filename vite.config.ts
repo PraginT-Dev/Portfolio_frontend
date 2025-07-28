@@ -1,10 +1,11 @@
+// vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import glsl from 'vite-plugin-glsl';
 import path from 'path';
 
 export default defineConfig({
-  base: '/', // ✅ FIXED: use absolute base for Vercel
+  base: './', // ✅ Critical for correct pathing in Vercel
   plugins: [
     react(),
     glsl({
@@ -19,10 +20,5 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-  },
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-    strictPort: true,
   },
 });
