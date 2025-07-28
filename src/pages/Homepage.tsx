@@ -72,7 +72,7 @@ const Homepage: React.FC<HomepageProps> = ({
         </div>
       </div>
 
-      <img src="/face.png" alt="Face Overlay" className="face-overlay" />
+      <img src="/face_low.png" alt="Face Overlay" className="face-overlay" />
 
       <div
         className={`sequence-below-face ${isVisible ? 'fade-in' : 'fade-out'}`}

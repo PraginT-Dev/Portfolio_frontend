@@ -5,19 +5,17 @@ import '../styles/ProjectSequence.css';
 interface Props {
   isVisible?: boolean;
   onClick?: () => void;
-  enableTilt?: boolean; // device tilt interaction
-  autoPlayMobile?: boolean; // autoplay and reverse every few seconds
-  hoverSensitive?: boolean; // hover triggers animation
+  autoPlayMobile?: boolean;
+  hoverSensitive?: boolean;
   centerRadius?: number;
   framePath?: string;
   frameCount?: number;
   speed?: number;
 }
 
-const ImageSequence: React.FC<Props> = ({
+const ImageSequenceHoverSkills: React.FC<Props> = ({
   isVisible = true,
   onClick,
-  enableTilt = false,
   autoPlayMobile = true,
   hoverSensitive = true,
   centerRadius = 150,
@@ -68,6 +66,7 @@ const ImageSequence: React.FC<Props> = ({
 
   useEffect(() => {
     if (!containerRef.current) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -79,10 +78,12 @@ const ImageSequence: React.FC<Props> = ({
       },
       { threshold: 0.1 }
     );
+
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
+  // ✅ Auto-play on mobile every 3 seconds
   useEffect(() => {
     if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
     const interval = setInterval(() => {
@@ -92,23 +93,14 @@ const ImageSequence: React.FC<Props> = ({
     return () => clearInterval(interval);
   }, [inView, isVisible, isMobile, autoPlayMobile]);
 
-  useEffect(() => {
-    if (!inView || !isVisible || !isMobile || !enableTilt) return;
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      const tiltY = event.beta || 0;
-      directionRef.current = tiltY < 65 ? 1 : -1;
-      setIsPlaying(true);
-    };
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => window.removeEventListener('deviceorientation', handleOrientation);
-  }, [enableTilt, inView, isMobile, isVisible]);
-
+  // ✅ Hover trigger on desktop
   useEffect(() => {
     if (!inView || !isVisible || isMobile || !hoverSensitive) return;
     directionRef.current = hovered ? 1 : -1;
     setIsPlaying(true);
   }, [hovered, inView, isVisible, isMobile, hoverSensitive]);
 
+  // ✅ Frame animation runner
   useEffect(() => {
     if (!isPlaying) return;
     cancelAnimationFrame(requestRef.current);
@@ -148,4 +140,4 @@ const ImageSequence: React.FC<Props> = ({
   );
 };
 
-export default ImageSequence;
+export default ImageSequenceHoverSkills;

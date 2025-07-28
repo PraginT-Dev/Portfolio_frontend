@@ -1,11 +1,10 @@
-// src/components_front/ImageSequenceHoverAchievements.tsx
+// src/components_front/ImageSequence.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import '../styles/ProjectSequence.css';
 
 interface Props {
   isVisible?: boolean;
   onClick?: () => void;
-  enableTilt?: boolean;
   autoPlayMobile?: boolean;
   hoverSensitive?: boolean;
   centerRadius?: number;
@@ -17,7 +16,6 @@ interface Props {
 const ImageSequenceHoverAchievements: React.FC<Props> = ({
   isVisible = true,
   onClick,
-  enableTilt = false,
   autoPlayMobile = true,
   hoverSensitive = true,
   centerRadius = 150,
@@ -30,22 +28,16 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
   const requestRef = useRef<number>(0);
   const directionRef = useRef<1 | -1>(1);
   const currentFrame = useRef(0);
-
   const [hovered, setHovered] = useState(false);
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-  const preloadImages = async () => {
-    const promises: Promise<void>[] = [];
+  const preloadImages = () => {
     for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
       img.src = `${framePath}${String(i).padStart(4, '0')}.png`;
-      promises.push(new Promise((res) => (img.onload = () => res())));
     }
-    await Promise.all(promises);
-    setImagesLoaded(true);
   };
 
   const updateFrame = () => {
@@ -74,53 +66,47 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
 
   useEffect(() => {
     if (!containerRef.current) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setInView(true);
-          preloadImages(); // Load once we enter view
+          preloadImages();
         } else {
           setInView(false);
         }
       },
       { threshold: 0.1 }
     );
+
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
+  // ✅ Auto-play on mobile every 3 seconds
   useEffect(() => {
-    if (!inView || !isVisible || !imagesLoaded || !isMobile || !autoPlayMobile) return;
+    if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
     const interval = setInterval(() => {
       directionRef.current *= -1;
       setIsPlaying(true);
     }, 3000);
     return () => clearInterval(interval);
-  }, [inView, isVisible, isMobile, autoPlayMobile, imagesLoaded]);
+  }, [inView, isVisible, isMobile, autoPlayMobile]);
 
+  // ✅ Hover trigger on desktop
   useEffect(() => {
-    if (!inView || !isVisible || !imagesLoaded || !isMobile || !enableTilt) return;
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      const tiltY = event.beta || 0;
-      directionRef.current = tiltY < 65 ? 1 : -1;
-      setIsPlaying(true);
-    };
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => window.removeEventListener('deviceorientation', handleOrientation);
-  }, [enableTilt, inView, isMobile, isVisible, imagesLoaded]);
-
-  useEffect(() => {
-    if (!inView || !isVisible || !imagesLoaded || isMobile || !hoverSensitive) return;
+    if (!inView || !isVisible || isMobile || !hoverSensitive) return;
     directionRef.current = hovered ? 1 : -1;
     setIsPlaying(true);
-  }, [hovered, inView, isVisible, isMobile, hoverSensitive, imagesLoaded]);
+  }, [hovered, inView, isVisible, isMobile, hoverSensitive]);
 
+  // ✅ Frame animation runner
   useEffect(() => {
-    if (!imagesLoaded || !isPlaying) return;
+    if (!isPlaying) return;
     cancelAnimationFrame(requestRef.current);
     requestRef.current = requestAnimationFrame(updateFrame);
     return () => cancelAnimationFrame(requestRef.current);
-  }, [isPlaying, imagesLoaded]);
+  }, [isPlaying]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!hoverSensitive || isMobile) return;
@@ -143,16 +129,12 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
         className={`fade-wrapper ${isVisible ? 'fade-in' : 'fade-out'}`}
         style={{ width: '100%', height: '100%' }}
       >
-        {!imagesLoaded ? (
-          <div className="loading-frame">Loading...</div> // optional loading UI
-        ) : (
-          <img
-            ref={imgRef}
-            src={`${framePath}0001.png`}
-            alt="Animation"
-            className="image-sequence-img"
-          />
-        )}
+        <img
+          ref={imgRef}
+          src={`${framePath}0001.png`}
+          alt="Animation"
+          className="image-sequence-img"
+        />
       </div>
     </div>
   );
