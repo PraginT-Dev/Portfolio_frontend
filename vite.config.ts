@@ -4,7 +4,7 @@ import glsl from 'vite-plugin-glsl';
 import path from 'path';
 
 export default defineConfig({
-  base: './', // ⬅️ this fixes blank screen issues on deployment
+  base: '/', // ✅ FIXED: use absolute base for Vercel
   plugins: [
     react(),
     glsl({
