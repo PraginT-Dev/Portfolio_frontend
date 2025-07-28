@@ -24,7 +24,7 @@ export default function Skills({ onBack }: SkillsProps) {
 
   useEffect(() => {
     axios
-      .get("https://portfolio-backend-1-ykyp.onrender.com/api/skills/")
+      .get("https://portfolio-backend-2s7t.onrender.com/api/skills/")
       .then((res) => {
         setSegments(res.data);
         setLoading(false);

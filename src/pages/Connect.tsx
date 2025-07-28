@@ -18,7 +18,7 @@ const ConnectUs: React.FC<Props> = ({ onBack, onReturnHome }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('https://portfolio-backend-igmy.onrender.com/api/feedback/', {
+      const response = await fetch('https://portfolio-backend-2s7t.onrender.com/api/feedback/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
