@@ -44,31 +44,27 @@ const Homepage: React.FC<HomepageProps> = ({
   return (
     <div className="homepage-container">
       <div className="name-stack">
-        <div className="hi-top">Hi</div>
+        <div className="hi-top">Hi 👋 </div>
         <div className="name-3d">T.Pragin</div>
         <div className="role-below">
+          <a
+            href="https://github.com/your-github"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/github.png" alt="GitHub" />
+          </a>
+          
+          <span>3D stack Dev</span>
+
           <a
             href="https://www.linkedin.com/in/your-profile"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src="/linkedin.svg" alt="LinkedIn" />
+            <img src="/linkedin.png" alt="LinkedIn" />
           </a>
-          <a
-            href="https://github.com/your-github"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="/github.svg" alt="GitHub" />
-          </a>
-          <span>3D Web Dev</span>
-             <a
-            href="https://github.com/your-github"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="/github.svg" alt="GitHub" />
-          </a>
+
         </div>
       </div>
 
