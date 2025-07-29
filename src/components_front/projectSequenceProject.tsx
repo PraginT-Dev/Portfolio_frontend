@@ -25,14 +25,14 @@ const ImageSequenceHover: React.FC<Props> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const requestRef = useRef<number | null>(null);
-  const directionRef = useRef<1 | -1>(1); // Ensuring that directionRef can only be 1 or -1
+  const directionRef = useRef<1 | -1>(1);
   const currentFrame = useRef(0);
 
   const [hovered, setHovered] = useState(false);
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Preload images for the animation sequence
+  // Preload images
   const preloadImages = () => {
     for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
@@ -40,7 +40,6 @@ const ImageSequenceHover: React.FC<Props> = ({
     }
   };
 
-  // Render the current frame for the animation
   const renderFrame = () => {
     const frameIndex = String(Math.floor(currentFrame.current) + 1).padStart(4, '0');
     if (imgRef.current) {
@@ -48,36 +47,26 @@ const ImageSequenceHover: React.FC<Props> = ({
     }
   };
 
-  // Main animation logic
   const animate = () => {
     currentFrame.current += speed * directionRef.current;
 
-    if (currentFrame.current >= frameCount - 1) {
-      currentFrame.current = frameCount - 1;
-      cancelAnimationFrame(requestRef.current!);
-      requestRef.current = null;
-      return;
+    if (currentFrame.current >= frameCount - 1 || currentFrame.current <= 0) {
+      directionRef.current = directionRef.current === 1 ? -1 : 1; // Toggle direction
     }
 
-    if (currentFrame.current <= 0) {
-      currentFrame.current = 0;
-      cancelAnimationFrame(requestRef.current!);
-      requestRef.current = null;
-      return;
-    }
-
+    currentFrame.current = Math.max(0, Math.min(frameCount - 1, currentFrame.current));
     renderFrame();
+
     requestRef.current = requestAnimationFrame(animate);
   };
 
-  // Start animation in the given direction (1 or -1)
   const startAnimation = (dir: 1 | -1) => {
-    directionRef.current = dir; // Now assigning only 1 or -1
-    if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    if (requestRef.current) cancelAnimationFrame(requestRef.current); // Clear previous frame requests
+    directionRef.current = dir;
     requestRef.current = requestAnimationFrame(animate);
   };
 
-  // Detect mobile devices (screen width <= 768px)
+  // Detect mobile
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 768);
     check();
@@ -85,13 +74,13 @@ const ImageSequenceHover: React.FC<Props> = ({
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Intersection Observer to track when the element comes into view
+  // Intersection Observer
   useEffect(() => {
     if (!containerRef.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         setInView(entry.isIntersecting);
-        if (entry.isIntersecting) preloadImages(); // Preload images when in view
+        if (entry.isIntersecting) preloadImages();
       },
       { threshold: 0.1 }
     );
@@ -99,7 +88,7 @@ const ImageSequenceHover: React.FC<Props> = ({
     return () => observer.disconnect();
   }, []);
 
-  // Mobile autoplay logic (ping-pong effect, toggles between forward and backward every 3 seconds)
+  // Mobile autoplay logic (ping-pong effect)
   useEffect(() => {
     if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
 
@@ -108,24 +97,23 @@ const ImageSequenceHover: React.FC<Props> = ({
       startAnimation(directionRef.current);
     }, 3000);
 
-    return () => clearInterval(interval); // Clean up interval on unmount
+    return () => clearInterval(interval); // Clean up interval
   }, [inView, isVisible, isMobile, autoPlayMobile]);
 
-  // Desktop hover effect logic
+  // Desktop hover logic
   useEffect(() => {
     if (!inView || !isVisible || isMobile || !hoverSensitive) return;
     if (hovered) startAnimation(1);
     else startAnimation(-1);
   }, [hovered, inView, isVisible, isMobile, hoverSensitive]);
 
-  // Mouse move logic for hover-sensitive animation on desktop
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!hoverSensitive || isMobile) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const dx = e.clientX - (rect.left + rect.width / 2);
     const dy = e.clientY - (rect.top + rect.height / 2);
     const distance = Math.sqrt(dx * dx + dy * dy);
-    setHovered(distance < centerRadius); // Trigger animation if within the hover-sensitive area
+    setHovered(distance < centerRadius);
   };
 
   return (
