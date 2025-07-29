@@ -1,3 +1,4 @@
+// src/components_front/ImageSequence.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import '../styles/ProjectSequence.css';
 
@@ -24,15 +25,14 @@ const ImageSequenceHover: React.FC<Props> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const requestRef = useRef<number | null>(null);
+  const requestRef = useRef<number>(0);
   const directionRef = useRef<1 | -1>(1);
   const currentFrame = useRef(0);
-
   const [hovered, setHovered] = useState(false);
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // Preload images
   const preloadImages = () => {
     for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
@@ -40,72 +40,73 @@ const ImageSequenceHover: React.FC<Props> = ({
     }
   };
 
-  const renderFrame = () => {
-    const frameIndex = String(Math.floor(currentFrame.current) + 1).padStart(4, '0');
-    if (imgRef.current) {
-      imgRef.current.src = `${framePath}${frameIndex}.png`;
+  const updateFrame = () => {
+    const atEnd = directionRef.current === 1 && currentFrame.current >= frameCount - 1;
+    const atStart = directionRef.current === -1 && currentFrame.current <= 0;
+
+    if (!atEnd && !atStart) {
+      currentFrame.current += speed * directionRef.current;
+      currentFrame.current = Math.max(0, Math.min(frameCount - 1, currentFrame.current));
+      const frameIndex = String(Math.floor(currentFrame.current) + 1).padStart(4, '0');
+      if (imgRef.current) {
+        imgRef.current.src = `${framePath}${frameIndex}.png`;
+      }
+      requestRef.current = requestAnimationFrame(updateFrame);
+    } else {
+      setIsPlaying(false);
     }
   };
 
-  const animate = () => {
-    currentFrame.current += speed * directionRef.current;
-
-    if (currentFrame.current >= frameCount - 1 || currentFrame.current <= 0) {
-      directionRef.current = directionRef.current === 1 ? -1 : 1; // Toggle direction
-    }
-
-    currentFrame.current = Math.max(0, Math.min(frameCount - 1, currentFrame.current));
-    renderFrame();
-
-    requestRef.current = requestAnimationFrame(animate);
-  };
-
-  const startAnimation = (dir: 1 | -1) => {
-    if (requestRef.current) cancelAnimationFrame(requestRef.current); // Clear previous frame requests
-    directionRef.current = dir;
-    requestRef.current = requestAnimationFrame(animate);
-  };
-
-  // Detect mobile
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Intersection Observer
   useEffect(() => {
     if (!containerRef.current) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setInView(entry.isIntersecting);
-        if (entry.isIntersecting) preloadImages();
+        if (entry.isIntersecting) {
+          setInView(true);
+          preloadImages();
+        } else {
+          setInView(false);
+        }
       },
       { threshold: 0.1 }
     );
+
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // Mobile autoplay logic (ping-pong effect)
+  // ✅ Auto-play on mobile every 3 seconds
   useEffect(() => {
     if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
-
     const interval = setInterval(() => {
-      directionRef.current = directionRef.current === 1 ? -1 : 1; // Toggle between 1 and -1
-      startAnimation(directionRef.current);
+      directionRef.current *= -1;
+      setIsPlaying(true);
     }, 3000);
-
-    return () => clearInterval(interval); // Clean up interval
+    return () => clearInterval(interval);
   }, [inView, isVisible, isMobile, autoPlayMobile]);
 
-  // Desktop hover logic
+  // ✅ Hover trigger on desktop
   useEffect(() => {
     if (!inView || !isVisible || isMobile || !hoverSensitive) return;
-    if (hovered) startAnimation(1);
-    else startAnimation(-1);
+    directionRef.current = hovered ? 1 : -1;
+    setIsPlaying(true);
   }, [hovered, inView, isVisible, isMobile, hoverSensitive]);
+
+  // ✅ Frame animation runner
+  useEffect(() => {
+    if (!isPlaying) return;
+    cancelAnimationFrame(requestRef.current);
+    requestRef.current = requestAnimationFrame(updateFrame);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, [isPlaying]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!hoverSensitive || isMobile) return;
