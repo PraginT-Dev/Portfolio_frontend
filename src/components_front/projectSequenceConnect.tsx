@@ -1,3 +1,4 @@
+// src/components_front/ImageSequence.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import '../styles/ProjectSequence.css';
 
@@ -31,7 +32,6 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const isAutoAnimating = useRef(false);
 
   const preloadImages = () => {
     for (let i = 1; i <= frameCount; i++) {
@@ -53,9 +53,7 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
       }
       requestRef.current = requestAnimationFrame(updateFrame);
     } else {
-      cancelAnimationFrame(requestRef.current);
       setIsPlaying(false);
-      isAutoAnimating.current = false;
     }
   };
 
@@ -85,29 +83,24 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
     return () => observer.disconnect();
   }, []);
 
-  // ✅ Mobile autoplay every 3s
+  // ✅ Auto-play on mobile every 3 seconds
   useEffect(() => {
     if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
     const interval = setInterval(() => {
-      if (!isPlaying) {
-        directionRef.current *= -1;
-        isAutoAnimating.current = true;
-        setIsPlaying(true);
-      }
+      directionRef.current *= -1;
+      setIsPlaying(true);
     }, 3000);
     return () => clearInterval(interval);
-  }, [inView, isVisible, isMobile, autoPlayMobile, isPlaying]);
+  }, [inView, isVisible, isMobile, autoPlayMobile]);
 
-  // ✅ Desktop hover: play forward/reverse
+  // ✅ Hover trigger on desktop
   useEffect(() => {
     if (!inView || !isVisible || isMobile || !hoverSensitive) return;
-    if (!isPlaying) {
-      directionRef.current = hovered ? 1 : -1;
-      setIsPlaying(true);
-    }
-  }, [hovered, inView, isVisible, isMobile, hoverSensitive, isPlaying]);
+    directionRef.current = hovered ? 1 : -1;
+    setIsPlaying(true);
+  }, [hovered, inView, isVisible, isMobile, hoverSensitive]);
 
-  // ✅ Run frame animation
+  // ✅ Frame animation runner
   useEffect(() => {
     if (!isPlaying) return;
     cancelAnimationFrame(requestRef.current);
