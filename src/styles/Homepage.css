@@ -98,12 +98,12 @@
 }
 
 @media (max-width: 580px) {
-  .name-3d {
-    font-size: 3rem;
-  }
+body .name-3d {
+  font-size: 3.7rem;
+}
 
-  .name-stack {
-    top: 8rem;
+body .name-stack {
+    top: 7rem;
     right: 3rem;
   }
 }

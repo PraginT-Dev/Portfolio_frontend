@@ -1,7 +1,7 @@
 .skills-container {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 1.5rem;
   width: 100%;
   max-width: 1400px;
   padding: 1rem;
@@ -87,7 +87,21 @@
 }
 @media (max-width: 768px) {
   .skill-item {
-    width: 64px;
+    width: 35px;
+  }
+
+  .skill-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .tooltip {
+    font-size: 0.65rem;
+  }
+}
+@media (max-width: 517px) {
+  .skill-item {
+    width: 30px;
   }
 
   .skill-icon {

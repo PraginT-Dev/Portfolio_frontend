@@ -1,4 +1,3 @@
-// src/components_front/ImageSequence.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import '../styles/ProjectSequence.css';
 
@@ -13,7 +12,7 @@ interface Props {
   speed?: number;
 }
 
-const ImageSequenceHoverAchievements: React.FC<Props> = ({
+const ImageSequenceHoverAchivements: React.FC<Props> = ({
   isVisible = true,
   onClick,
   autoPlayMobile = true,
@@ -32,6 +31,7 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isAutoAnimating = useRef(false);
 
   const preloadImages = () => {
     for (let i = 1; i <= frameCount; i++) {
@@ -53,7 +53,9 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
       }
       requestRef.current = requestAnimationFrame(updateFrame);
     } else {
+      cancelAnimationFrame(requestRef.current);
       setIsPlaying(false);
+      isAutoAnimating.current = false;
     }
   };
 
@@ -83,24 +85,29 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
     return () => observer.disconnect();
   }, []);
 
-  // ✅ Auto-play on mobile every 3 seconds
+  // ✅ Mobile autoplay every 3s
   useEffect(() => {
     if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
     const interval = setInterval(() => {
-      directionRef.current *= -1;
-      setIsPlaying(true);
+      if (!isPlaying) {
+        directionRef.current *= -1;
+        isAutoAnimating.current = true;
+        setIsPlaying(true);
+      }
     }, 3000);
     return () => clearInterval(interval);
-  }, [inView, isVisible, isMobile, autoPlayMobile]);
+  }, [inView, isVisible, isMobile, autoPlayMobile, isPlaying]);
 
-  // ✅ Hover trigger on desktop
+  // ✅ Desktop hover: play forward/reverse
   useEffect(() => {
     if (!inView || !isVisible || isMobile || !hoverSensitive) return;
-    directionRef.current = hovered ? 1 : -1;
-    setIsPlaying(true);
-  }, [hovered, inView, isVisible, isMobile, hoverSensitive]);
+    if (!isPlaying) {
+      directionRef.current = hovered ? 1 : -1;
+      setIsPlaying(true);
+    }
+  }, [hovered, inView, isVisible, isMobile, hoverSensitive, isPlaying]);
 
-  // ✅ Frame animation runner
+  // ✅ Run frame animation
   useEffect(() => {
     if (!isPlaying) return;
     cancelAnimationFrame(requestRef.current);
@@ -140,4 +147,4 @@ const ImageSequenceHoverAchievements: React.FC<Props> = ({
   );
 };
 
-export default ImageSequenceHoverAchievements;
+export default ImageSequenceHoverAchivements;
