@@ -1,4 +1,3 @@
-// src/components_front/ImageSequence.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import '../styles/ProjectSequence.css';
 
@@ -26,13 +25,14 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const requestRef = useRef<number | null>(null);
-  const directionRef = useRef<1 | -1>(1); // Ensure it's restricted to 1 or -1
+  const directionRef = useRef<1 | -1>(1); // Ensuring that directionRef can only be 1 or -1
   const currentFrame = useRef(0);
-  
+
   const [hovered, setHovered] = useState(false);
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Preload images for the animation sequence
   const preloadImages = () => {
     for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
@@ -40,6 +40,7 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
     }
   };
 
+  // Render the current frame for the animation
   const renderFrame = () => {
     const frameIndex = String(Math.floor(currentFrame.current) + 1).padStart(4, '0');
     if (imgRef.current) {
@@ -47,6 +48,7 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
     }
   };
 
+  // Main animation logic
   const animate = () => {
     currentFrame.current += speed * directionRef.current;
 
@@ -68,13 +70,14 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
     requestRef.current = requestAnimationFrame(animate);
   };
 
+  // Start animation in the given direction (1 or -1)
   const startAnimation = (dir: 1 | -1) => {
     directionRef.current = dir; // Now assigning only 1 or -1
     if (requestRef.current) cancelAnimationFrame(requestRef.current);
     requestRef.current = requestAnimationFrame(animate);
   };
 
-  // Detect mobile
+  // Detect mobile devices (screen width <= 768px)
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 768);
     check();
@@ -82,13 +85,13 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Intersection Observer
+  // Intersection Observer to track when the element comes into view
   useEffect(() => {
     if (!containerRef.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         setInView(entry.isIntersecting);
-        if (entry.isIntersecting) preloadImages();
+        if (entry.isIntersecting) preloadImages(); // Preload images when in view
       },
       { threshold: 0.1 }
     );
@@ -96,7 +99,7 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
     return () => observer.disconnect();
   }, []);
 
-  // Mobile autoplay logic (ping-pong)
+  // Mobile autoplay logic (ping-pong effect, toggles between forward and backward every 3 seconds)
   useEffect(() => {
     if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
 
@@ -105,23 +108,24 @@ const ImageSequenceHoverConnect: React.FC<Props> = ({
       startAnimation(directionRef.current);
     }, 3000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); // Clean up interval on unmount
   }, [inView, isVisible, isMobile, autoPlayMobile]);
 
-  // Desktop hover logic
+  // Desktop hover effect logic
   useEffect(() => {
     if (!inView || !isVisible || isMobile || !hoverSensitive) return;
     if (hovered) startAnimation(1);
     else startAnimation(-1);
   }, [hovered, inView, isVisible, isMobile, hoverSensitive]);
 
+  // Mouse move logic for hover-sensitive animation on desktop
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!hoverSensitive || isMobile) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const dx = e.clientX - (rect.left + rect.width / 2);
     const dy = e.clientY - (rect.top + rect.height / 2);
     const distance = Math.sqrt(dx * dx + dy * dy);
-    setHovered(distance < centerRadius);
+    setHovered(distance < centerRadius); // Trigger animation if within the hover-sensitive area
   };
 
   return (
