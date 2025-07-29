@@ -12,7 +12,7 @@ interface Props {
   speed?: number;
 }
 
-const ImageSequenceHoverAchivements: React.FC<Props> = ({
+const ImageSequenceHoverAchievements: React.FC<Props> = ({
   isVisible = true,
   onClick,
   autoPlayMobile = true,
@@ -28,10 +28,8 @@ const ImageSequenceHoverAchivements: React.FC<Props> = ({
   const directionRef = useRef<1 | -1>(1);
   const currentFrame = useRef(0);
   const [hovered, setHovered] = useState(false);
-  const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const isAutoAnimating = useRef(false);
 
   const preloadImages = () => {
     for (let i = 1; i <= frameCount; i++) {
@@ -53,9 +51,7 @@ const ImageSequenceHoverAchivements: React.FC<Props> = ({
       }
       requestRef.current = requestAnimationFrame(updateFrame);
     } else {
-      cancelAnimationFrame(requestRef.current);
       setIsPlaying(false);
-      isAutoAnimating.current = false;
     }
   };
 
@@ -66,48 +62,29 @@ const ImageSequenceHoverAchivements: React.FC<Props> = ({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Preload images immediately (no lazy load or intersection observer)
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          preloadImages();
-        } else {
-          setInView(false);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
+    preloadImages();
   }, []);
 
-  // ✅ Mobile autoplay every 3s
+  // ✅ Auto-play on mobile every 3 seconds
   useEffect(() => {
-    if (!inView || !isVisible || !isMobile || !autoPlayMobile) return;
+    if (!isMobile || !autoPlayMobile) return;
     const interval = setInterval(() => {
-      if (!isPlaying) {
-        directionRef.current *= -1;
-        isAutoAnimating.current = true;
-        setIsPlaying(true);
-      }
+      directionRef.current *= -1;
+      setIsPlaying(true);
     }, 3000);
     return () => clearInterval(interval);
-  }, [inView, isVisible, isMobile, autoPlayMobile, isPlaying]);
+  }, [isMobile, autoPlayMobile]);
 
-  // ✅ Desktop hover: play forward/reverse
+  // ✅ Hover trigger on desktop
   useEffect(() => {
-    if (!inView || !isVisible || isMobile || !hoverSensitive) return;
-    if (!isPlaying) {
-      directionRef.current = hovered ? 1 : -1;
-      setIsPlaying(true);
-    }
-  }, [hovered, inView, isVisible, isMobile, hoverSensitive, isPlaying]);
+    if (isMobile || !hoverSensitive) return;
+    directionRef.current = hovered ? 1 : -1;
+    setIsPlaying(true);
+  }, [hovered, isMobile, hoverSensitive]);
 
-  // ✅ Run frame animation
+  // ✅ Frame animation runner
   useEffect(() => {
     if (!isPlaying) return;
     cancelAnimationFrame(requestRef.current);
@@ -138,7 +115,7 @@ const ImageSequenceHoverAchivements: React.FC<Props> = ({
       >
         <img
           ref={imgRef}
-          src={`${framePath}0001.png`}
+          src={`${framePath}0001.png`}  // Start from the first frame
           alt="Animation"
           className="image-sequence-img"
         />
@@ -147,4 +124,4 @@ const ImageSequenceHoverAchivements: React.FC<Props> = ({
   );
 };
 
-export default ImageSequenceHoverAchivements;
+export default ImageSequenceHoverAchievements;
