@@ -1,4 +1,3 @@
-// src/components_front/ImageSequence.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import '../styles/ProjectSequence.css';
 
@@ -26,9 +25,9 @@ const ImageSequenceHover: React.FC<Props> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const requestRef = useRef<number | null>(null);
-  const directionRef = useRef<1 | -1>(1); // Ensure it's restricted to 1 or -1
+  const directionRef = useRef<1 | -1>(1); // Ensuring that directionRef can only be 1 or -1
   const currentFrame = useRef(0);
-  
+
   const [hovered, setHovered] = useState(false);
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
