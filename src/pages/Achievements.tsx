@@ -80,27 +80,28 @@ export default function Achievements({ onBack }: AchievementsProps) {
       </AnimatePresence>
 
       {/* Verify Button */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current.verify_link}
-          className="flex gap-4 mb-4"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.4 }}
-        >
-          {current.verify_link && (
-            <a
-              href={current.verify_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
-            >
-              🔗 Verify
-            </a>
-          )}
-        </motion.div>
-      </AnimatePresence>
+<AnimatePresence mode="wait">
+  <motion.div
+    key={current.verify_link}
+    className="flex gap-4 mb-4"
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    transition={{ duration: 0.4 }}
+  >
+    {current.verify_link && (
+      <a
+        href={current.verify_link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded transition text-sm sm:text-base sm:px-5 sm:py-2.5"
+      >
+        🔗 Verify
+      </a>
+    )}
+  </motion.div>
+</AnimatePresence>
+
 
       {/* Carousel */}
       {carouselItems.length > 0 ? (
@@ -125,7 +126,7 @@ export default function Achievements({ onBack }: AchievementsProps) {
       <AnimatePresence mode="wait">
         <motion.div
           key={current.skills?.map((s) => s.name).join(",")}
-          className="mt-4 flex flex-wrap gap-3 justify-center max-w-full px-2 sm:gap-4"
+          className="mt-0 flex flex-wrap gap-0 justify-center max-w-full px-1 sm:gap-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -138,12 +139,16 @@ export default function Achievements({ onBack }: AchievementsProps) {
   tiltMaxAngleY={10}
   className="w-12 h-12 sm:w-10 sm:h-14 md:w-12 md:h-16 lg:w-18 lg:h-14 flex items-center justify-center p-1"
 >
-  <img
-    src={skill.image}
-    alt={skill.name}
-    title={skill.name} // ✅ tooltip here!
-    className="w-full h-full object-contain"
-  />
+<img
+  src={skill.image}
+  alt={skill.name}
+  title={skill.name}
+  style={{
+    maxWidth: '50%',
+    height: 'auto',
+  }}
+/>
+
 </Tilt>
           ))}
         </motion.div>

@@ -113,3 +113,49 @@
     font-size: 0.65rem;
   }
 }
+@media (max-width: 473px) {
+  .skill-item {
+    width: 20px;
+    gap: 0.2;
+
+  }
+
+  .skill-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .tooltip {
+    font-size: 0.65rem;
+    
+  }
+  .skills-container {
+  gap: 0.2rem;
+}
+}
+@media (max-width: 324px) {
+  .skill-item {
+    width: 10px;
+    gap: 0.2;
+
+  }
+
+  .skill-icon {
+    width: 25px;
+    height: 25px;
+  }
+
+  .tooltip {
+    font-size: 0.65rem;
+    
+  }
+  .skills-container {
+  gap: 0.1rem;
+}
+}
+@media (max-width: 344px) {
+  .btn-responsive {
+    font-size: 0.75rem; /* text-sm */
+    padding: 0.25rem 0.5rem; /* px-2 py-1 */
+  }
+}

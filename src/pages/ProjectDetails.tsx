@@ -131,7 +131,11 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
               href={currentProject.github_link}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded transition"
+                className="
+    bg-gray-900 hover:bg-gray-700 text-white 
+    px-4 py-2 rounded transition 
+    max-[344px]:text-sm max-[344px]:px-2 max-[344px]:py-1
+  "
             >
               🔗 GitHub
             </a>
@@ -141,8 +145,13 @@ export default function ProjectGallery({ onBack }: ProjectGalleryProps) {
               href={currentProject.live_preview_link}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded transition"
-            >
+               className="
+    bg-green-700 hover:bg-green-600 text-white 
+    px-4 py-2 rounded transition
+    max-[344px]:text-sm max-[344px]:px-2 max-[344px]:py-1
+  "
+>
+
               🚀 Live Preview
             </a>
           )}

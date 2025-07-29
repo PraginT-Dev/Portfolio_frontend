@@ -240,3 +240,29 @@
     height: 100vh;
   }
 }
+
+@media (max-width: 355px) {
+  .project-details-container {
+    padding: 0.5rem;
+  }
+  .project-gallery-title {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    margin-right: 0rem;
+    max-width: 97vw;
+    
+  }
+  .project-card {
+    padding: 0.7rem;
+    max-width: 100vw;
+  }
+  .project-description {
+    font-size: 1rem;
+    max-width: 97vw;
+    padding: 0 0.18rem;
+  }
+  .project-images img {
+    max-width: 46vw;
+    height: 90px;
+  }
+}
