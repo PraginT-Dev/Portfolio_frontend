@@ -55,7 +55,7 @@ const Homepage: React.FC<HomepageProps> = ({
             <img src="/github.png" alt="GitHub" />
           </a>
           
-          <span>3D stack Dev</span>
+          <span>Technical artist</span>
 
           <a
             href="https://www.linkedin.com/in/pragin-t/"
